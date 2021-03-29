@@ -23,7 +23,7 @@ public class TestServer {
         // HTTP Server 생성
         this.server = HttpServer.create(new InetSocketAddress(host, port), DEFAULT_BACKLOG);
         // HTTP Server Context 설정
-        server.createContext("/", new RootHandler());
+        server.createContext("/", new CustomHttpHandler());
     }
     
     public void start() {
@@ -71,50 +71,5 @@ public class TestServer {
             httpServerManager.stop(0);
         }
     }
- 
-    /**
-     * Sub Class
-     */
-    class RootHandler implements HttpHandler {    
-        
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            
-            // Initialize Response Body
-            OutputStream respBody = exchange.getResponseBody();
-            
-            HttpRequestHandler requestHandler = new HttpRequestHandler(exchange);
-            
-            try {
 
-            	// responseBody Encoding to UTF-8
-                ByteBuffer responseByteBuffer = Charset.forName("UTF-8").encode(requestHandler.responseBody());
-                int contentLength = responseByteBuffer.limit();
-                byte[] content = new byte[contentLength];
-                responseByteBuffer.get(content, 0, contentLength);
-                
-                // Set Response Headers
-                Headers headers = exchange.getResponseHeaders();
-                headers.add("Content-Type", "text/json;charset=UTF-8");
-                headers.add("Content-Length", String.valueOf(contentLength));
-                
-                // Send Response
-                exchange.sendResponseHeaders(200, contentLength);
-                respBody.write(content);
-                
-                // Close Stream
-                // 반드시, Response Header를 보낸 후에 닫아야함
-                respBody.close();
-                
-            } catch ( IOException e ) {
-                e.printStackTrace();
-                
-                if( respBody != null ) {
-                    respBody.close();
-                }
-            } finally {
-                exchange.close();
-            }
-        }
-    }
 }
