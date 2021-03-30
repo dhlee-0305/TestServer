@@ -1,12 +1,6 @@
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
  
 public class TestServer {
